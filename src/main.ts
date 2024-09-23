@@ -13,10 +13,11 @@ const filePathAbs = path.resolve(filePath);
 console.log(filePathAbs);
 
 const fps = 30;
-const frameDuration = 1000 / fps;
-const outputDuration = 20 * 1000;
-const zeroPadding = 4;
-const framesOutputDir = './frames';
+const frameDurationMs = 1000 / fps;
+const outputDurationMs = 20 * 1000;
+const totalFrames = Math.round(outputDurationMs / frameDurationMs);
+const zeroPadding = totalFrames.toString().length;
+const framesOutputDir = 'frames';
 const ffmpegOutputOpts = [
 	'-r', fps.toString(),
 	'-c:v', 'prores_ks',
@@ -42,17 +43,9 @@ async function main() {
 	rimraf.sync(framesOutputDir);
 	fs.mkdirSync(framesOutputDir);
 
-	await page.evaluate(() => {
-		const transforms = document.querySelectorAll('animateTransform');
-		for (const t of transforms) {
-			t.beginElement();
-		}
-	});
-
-	const totalFrames = Math.round(outputDuration / frameDuration);
 	for (let i = 0; i < totalFrames; i++) {
 		const frameNumber = String(i).padStart(zeroPadding, '0');
-		const currentTime = i * frameDuration;
+		const currentTime = i * frameDurationMs;
 
 		const currentTimeSec = currentTime / 1000;
 		await page.evaluate((time) => {
@@ -66,7 +59,7 @@ async function main() {
 		}, currentTimeSec);
 
 		await page.screenshot({
-			path: `${framesOutputDir}/frame_${frameNumber}.png`,
+			path: path.join(framesOutputDir, `frame_${frameNumber}.png`),
 			omitBackground: true,
 		});
 
@@ -81,7 +74,7 @@ async function main() {
 
 
 function generateVideo(fps: number, framesDir: string) {
-	const outputFilePath = './output.mov';
+	const outputFilePath = 'output.mov';
 	ffmpeg(
 		path.join(framesDir, `frame_%0${zeroPadding}d.png`)
 	)
