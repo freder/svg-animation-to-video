@@ -16,4 +16,4 @@ npx vite-node src/main.ts \
 ```
 
 This will create `animation.mov` in the same directory.
-The codec used is ProRes 422 HQ, 10 Bit.
+The codec used is ProRes 4444, 10 Bit.

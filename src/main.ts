@@ -45,8 +45,8 @@ const videoOutputFilePath = `${basenameNoExt}.mov`;
 const ffmpegOutputOpts = [
 	'-r', fps.toString(),
 	'-c:v', 'prores_ks',
-	'-profile:v', '3', // prores 422 hq
-	'-pix_fmt', 'yuv422p10le', // 10-bit color
+	'-profile:v', '4444', // with alpha
+	'-pix_fmt', 'yuva444p10le', // 10-bit color
 ];
 
 main();
