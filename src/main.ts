@@ -1,6 +1,8 @@
 import fs from 'fs';
 import path from 'path';
 
+import yargs from 'yargs';
+import { hideBin } from 'yargs/helpers';
 import puppeteer from 'puppeteer';
 import ffmpeg from 'fluent-ffmpeg';
 import { rimraf } from 'rimraf';
@@ -8,16 +10,38 @@ import { rimraf } from 'rimraf';
 import { extractDimensions } from './utils';
 
 
-const filePath = process.argv[process.argv.length - 1];
+const args = yargs(hideBin(process.argv))
+	.option('input', {
+		alias: 'i',
+		type: 'string',
+		description: 'Input .svg file',
+	})
+	.option('fps', {
+		type: 'number',
+		description: 'Capture and output FPS',
+		default: 30,
+	})
+	.option('duration', {
+		alias: 'd',
+		type: 'number',
+		description: 'Duration in seconds',
+	})
+	.parseSync();
+
+const filePath = args.input as string;
+const fps = args.fps as number;
+const duration = args.duration as number;
+
+const basenameNoExt = path.basename(filePath, '.svg');
 const filePathAbs = path.resolve(filePath);
 console.log(filePathAbs);
 
-const fps = 30;
 const frameDurationMs = 1000 / fps;
-const outputDurationMs = 20 * 1000;
+const outputDurationMs = duration * 1000;
 const totalFrames = Math.round(outputDurationMs / frameDurationMs);
 const zeroPadding = totalFrames.toString().length;
 const framesOutputDir = 'frames';
+const videoOutputFilePath = `${basenameNoExt}.mov`;
 const ffmpegOutputOpts = [
 	'-r', fps.toString(),
 	'-c:v', 'prores_ks',
@@ -74,7 +98,6 @@ async function main() {
 
 
 function generateVideo(fps: number, framesDir: string) {
-	const outputFilePath = 'output.mov';
 	ffmpeg(
 		path.join(framesDir, `frame_%0${zeroPadding}d.png`)
 	)
@@ -83,7 +106,7 @@ function generateVideo(fps: number, framesDir: string) {
 			'-framerate', fps.toString(),
 		])
 		.outputOptions(ffmpegOutputOpts)
-		.output(outputFilePath)
+		.output(videoOutputFilePath)
 		.on('start', (commandLine) => {
 			console.log('FFmpeg process started:', commandLine);
 		})
