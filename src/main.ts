@@ -11,10 +11,13 @@ import { extractDimensions } from './utils';
 
 
 const args = yargs(hideBin(process.argv))
+	.scriptName('cmd') // Optional: sets the script name for help messages
+	.usage('$0 [args]')
 	.option('input', {
 		alias: 'i',
 		type: 'string',
 		description: 'Input .svg file',
+		demandOption: true,
 	})
 	.option('fps', {
 		type: 'number',
@@ -25,7 +28,9 @@ const args = yargs(hideBin(process.argv))
 		alias: 'd',
 		type: 'number',
 		description: 'Duration in seconds',
+		demandOption: true,
 	})
+	.help()
 	.parseSync();
 
 const filePath = args.input as string;
