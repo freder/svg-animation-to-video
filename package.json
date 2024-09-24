@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "devDependencies": {
+    "@liuli-util/vite-plugin-node": "^0.9.0",
     "@types/fluent-ffmpeg": "^2.1.26",
     "@types/yargs": "^17.0.33",
     "typescript": "^5.5.3",
