@@ -2,12 +2,12 @@ Renders animated SVGs to video using Puppeteer and FFmpeg.
 Only tested with [SMIL](https://developer.mozilla.org/en-US/docs/Web/SVG/SVG_animation_with_SMIL) animations so far.
 
 
-# Setup
+## Setup
 ```shell
 npm install
 ```
 
-# Run
+## Run
 ```shell
 npx vite-node src/main.ts \
 	--input=../animation.svg \
@@ -15,5 +15,9 @@ npx vite-node src/main.ts \
 	--fps=30
 ```
 
-This will create `animation.mov` in the same directory.
-The codec used is ProRes 4444, 10 Bit.
+This will create `animation.mov` in the same directory. The codec used is ProRes 4444, 10 Bit.
+
+## Build
+```shell
+npm run build
+```
